@@ -1,6 +1,6 @@
 /*
-*													  	MasterServer.h
-*												Master Server class header
+*																			  	MasterServer.h
+*																		Master Server class header
 *
 * Author:Amit Herman
 * 
@@ -13,7 +13,7 @@
 #include <QtNetwork/qtcpsocket.h>
 #include <iostream>
 #include <thread>
-#include "User.h"
+#include "User.hpp"
 
 /**
 * \classMasterServer
@@ -33,7 +33,6 @@ private:
 	int serverState=masterStopped;
 	QTcpServer MainSocket;
 	QXmlStreamReader xmlConfig;
-	std::thread handleMasterThread;
 	bool error;
 	std::list<User> usersList;
 
@@ -78,7 +77,7 @@ public:
 	int getMaxClients();
 	bool areClientsLimited();
 	bool startServer();
-	bool stopServer();
+	void stopServer();
 	QString getWelcomeMsg();
 	bool hasError();
 
