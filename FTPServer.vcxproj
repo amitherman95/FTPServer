@@ -102,10 +102,10 @@
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="MasterServer.h" />
+    <QtMoc Include="MasterServer.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="User.h" />
+    <ClInclude Include="User.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

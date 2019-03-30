@@ -5,7 +5,7 @@
 * Author:Amit Herman
 *
 */
-#include "user.h"
+#include "user.hpp"
 
 User::User(): canWrite(false), canRead(false), canDelFiles(false), canManipulateDirs(false) {}
 

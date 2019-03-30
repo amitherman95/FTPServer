@@ -6,18 +6,20 @@
 *
 */
 
-#include "MasterServer.h"
+#include "MasterServer.hpp"
 #include <qfile.h>
 #include <iostream>
 #include <memory>
-#include <csignal>
+
 
 MasterServer::MasterServer() :maxClients(10), limitClients(true), msgWelcome("FTP Server by Amit Herman"),
-error(false) {}
+error(false) {
+	QObject::connect(&MainSocket, &QTcpServer::newConnection, this, &MasterServer::acceptConnection);
+}
 
 MasterServer::MasterServer(const QString &pathConfig) {
 	error=loadConfig(pathConfig);
-
+	QObject::connect(&MainSocket, &QTcpServer::newConnection, this, &MasterServer::acceptConnection);
 }
 
 void MasterServer::setMaxClients(int max) {
@@ -163,24 +165,29 @@ void MasterServer::loadUsers() {
 
 bool MasterServer::startServer() {
 	if (hasError()) {
-		std::cerr << "Error, Unable to start\n";
-		return false;
+			std::cerr << "Error, Unable to start\n";
+			return false;
 	}
 	if (this->serverState == MasterServer::masterStopped) {
-		this->serverState = MasterServer::masterActive;
-		if (!MainSocket.listen(QHostAddress::Any, (quint16)ftpPort)) {
-			return false;
-		}
-		QObject::connect(&MainSocket, &QTcpServer::newConnection, this, &MasterServer::acceptConnection);
-		std::cout << "Server ready\n";
+			this->serverState = MasterServer::masterActive;
+			if (!MainSocket.listen(QHostAddress::Any, (quint16)ftpPort)) {
+				return false;
+			}
+			std::cout << "Server is active.\n";
 	}
 	return true;
 }
-
+void MasterServer::stopServer() {
+	if (this->serverState != MasterServer::masterStopped) {
+			MainSocket.close();
+	}
+	std::cout << "Server stopped\n";
+}
 /*					Slots				 */
 bool MasterServer::acceptConnection() {
+	std::cout << "Client connected\n";
 	std::unique_ptr<QTcpSocket> nextClient = nullptr;
 	nextClient = (std::unique_ptr<QTcpSocket>)MainSocket.nextPendingConnection();
-	nextClient->write(msgWelcome.toLocal8Bit());
+	nextClient->write(msgWelcome.toUtf8());
 	return true;
 }
