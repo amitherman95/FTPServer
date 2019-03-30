@@ -10,6 +10,7 @@
 #include <qfile.h>
 #include <iostream>
 #include <memory>
+#include <csignal>
 
 MasterServer::MasterServer() :maxClients(10), limitClients(true), msgWelcome("FTP Server by Amit Herman"),
 error(false) {}
@@ -159,13 +160,6 @@ void MasterServer::loadUsers() {
 
 
 
-/*					Slots				 */
-bool MasterServer::acceptConnection() {
-	std::unique_ptr<QTcpSocket> nextClient = nullptr;
-	nextClient = (std::unique_ptr<QTcpSocket>)MainSocket.nextPendingConnection();
-	nextClient->write(msgWelcome.toLocal8Bit());
-	return true;
-}
 
 bool MasterServer::startServer() {
 	if (hasError()) {
@@ -180,5 +174,13 @@ bool MasterServer::startServer() {
 		QObject::connect(&MainSocket, &QTcpServer::newConnection, this, &MasterServer::acceptConnection);
 		std::cout << "Server ready\n";
 	}
+	return true;
+}
+
+/*					Slots				 */
+bool MasterServer::acceptConnection() {
+	std::unique_ptr<QTcpSocket> nextClient = nullptr;
+	nextClient = (std::unique_ptr<QTcpSocket>)MainSocket.nextPendingConnection();
+	nextClient->write(msgWelcome.toLocal8Bit());
 	return true;
 }

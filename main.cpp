@@ -3,19 +3,18 @@
 #include "qfile.h"
 #include <iostream>
 #include "MasterServer.h"
-
+#include <csignal>
 
 int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
 	MasterServer master;
 	master.loadConfig("config.xml");
-
-
-	a.quit();
-	return 0;
+	signal(SIGINT, handlerQuit);
+	return a.exec;
 }
 
 
-
-	
+void handlerQuit(int signum) {
+	QCoreApplication::quit();
+}
