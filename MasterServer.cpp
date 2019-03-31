@@ -185,9 +185,18 @@ void MasterServer::stopServer() {
 }
 /*					Slots				 */
 bool MasterServer::acceptConnection() {
+	/*Creates new slave server*/
+	int bytes = 0;
+	int bytestobewritten = 0;
 	std::cout << "Client connected\n";
 	std::unique_ptr<QTcpSocket> nextClient = nullptr;
 	nextClient = (std::unique_ptr<QTcpSocket>)MainSocket.nextPendingConnection();
-	nextClient->write(msgWelcome.toUtf8());
+	sendData(nextClient.get() , msgWelcome.toStdString().c_str(), msgWelcome.length());
 	return true;
+
+}
+
+void MasterServer::sendData(QTcpSocket*Client, const char*data, int dataLen) {
+	Client->write(data, dataLen);
+	while (Client->flush()) {}
 }

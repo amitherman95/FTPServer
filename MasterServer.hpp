@@ -99,7 +99,7 @@ private:
 	void loadSettings();
 	void setError(bool err);
 	void loadUsers();
-
+	void sendData(QTcpSocket*Client, const char*data, int dataLen);
 public slots:
 	bool acceptConnection();
 
