@@ -97,6 +97,7 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FTPReply.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MasterServer.cpp" />
     <ClCompile Include="User.cpp" />
@@ -105,6 +106,8 @@
     <QtMoc Include="MasterServer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FTPReply.hpp" />
+    <ClInclude Include="SlaveServer.hpp" />
     <ClInclude Include="User.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

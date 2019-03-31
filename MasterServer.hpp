@@ -28,7 +28,7 @@ class MasterServer:public QObject {
 	/*	Members		*/
 private:
 	int maxClients;
-	bool limitClients; //*<Indicates whether there is a limit to the number of clientss
+	bool limitClients; //*<Indicates whether there is a limit to the number of clients
 	QString msgWelcome;
 	int serverState=masterStopped;
 	QTcpServer MainSocket;
