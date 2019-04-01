@@ -6,8 +6,8 @@ Author:Amit Herman
 FTPReply objects are simple object which hold a string and a number to indicate the reply code.
 */
 
-#ifndef SLAVE_SERVER_H
-#define SLAVE_SERVER_H
+#ifndef FTP_REPLY_H
+#define FTP_REPLY_H
 #include <iostream>
 
 class FTPReply {

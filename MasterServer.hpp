@@ -4,17 +4,21 @@
 *
 * Author:Amit Herman
 * 
- 
-*/
+*/	
+
 #ifndef MASTER_SERVER_H
 #define MASTER_SERVER_H
+
+
 #include <QtCore/qxmlstream.h>
 #include <QtNetwork/qtcpserver.h>
 #include <QtNetwork/qtcpsocket.h>
 #include <iostream>
 #include <thread>
 #include "User.hpp"
+#include "SlaveServer.hpp"
 
+using namespace std;
 /**
 * \classMasterServer
 *		Description: Master Server represents the process that listens on port 21(ftp)
@@ -22,6 +26,7 @@
 *							 sessions for one client.
 
 */
+
 class MasterServer:public QObject {
 	
 	Q_OBJECT
@@ -34,8 +39,10 @@ private:
 	QTcpServer MainSocket;
 	QXmlStreamReader xmlConfig;
 	bool error;
-	std::list<User> usersList;
+	list<User> listUsers;
+	list<unique_ptr<SlaveServer>> listClients;
 
+	
 	/*	Constants	*/
 public:
 	static const int masterActive = 1;
@@ -95,7 +102,7 @@ private:
 	* accepts connection requests and spawn new
 	*/
 	void MasterThread();
-	bool insertNewClient(QTcpSocket clientSocket);
+	bool insertNewClient(QTcpSocket* clientSocket);
 	void loadSettings();
 	void setError(bool err);
 	void loadUsers();

@@ -129,7 +129,7 @@ void MasterServer::loadUsers() {
 		} else if (name.compare("user", Qt::CaseInsensitive) == 0 && xmlConfig.isEndElement()) {
 				if (!flagInUserSubRoot) throw(std::runtime_error("Invalid XML"));
 				flagInUserSubRoot = false;
-				usersList.push_back(temp);
+				listUsers.push_back(temp);
 		} else if (xmlConfig.atEnd()) {
 				throw(std::runtime_error("Invalid XML"));
 		} else if (name.compare("username", Qt::CaseInsensitive) == 0) {
@@ -158,8 +158,6 @@ void MasterServer::loadUsers() {
 		name = xmlConfig.name().toString();
 	}	
 }
-
-
 
 
 
@@ -199,4 +197,8 @@ bool MasterServer::acceptConnection() {
 void MasterServer::sendData(QTcpSocket*Client, const char*data, int dataLen) {
 	Client->write(data, dataLen);
 	while (Client->flush()) {}
+}
+
+bool MasterServer::insertNewClient(QTcpSocket* clientSocket) {
+	listClients.push_back(make_unique<SlaveServer>(this, clientSocket));
 }
