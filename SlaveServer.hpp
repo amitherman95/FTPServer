@@ -14,55 +14,61 @@ class MasterServer;
 #include "qstring.h"
 #include "User.hpp"
 #include <QtWidgets/QFileSystemModel>
-#include <QtNetwork/qtcpserver.h>
+#include <QtNetwork/qtcpsocket.h>
 #include <thread>
+#include "FTPReply.hpp"
 
 
 /**\class SlaveServer class
 *	Represents the connection to each client
 	and handles user control.
 */
+using namespace std;
 class SlaveServer {
-		/*Constants*/
+																		/*Constants*/
 public:
 	static const int state_LoggedOut = 0;
 	static const int state_LoggedIn = 1;
 	static const int state_EnterPass = 2;
 	static const int state_ExpectRenameTo = 3;
 
-		/*Members*/
+																			/*Members*/
 private:
 	QString loginArgUsername;
 	QString loginArgPassword;
 	User *user=nullptr;
-	//MasterServer* parentMaster = nullptr;
+	MasterServer* parentMaster = nullptr;
 /**<Protocol Interpreter thread, receive commands from client*/
-	std::thread threadPI;
+	thread threadPI;
 	QTcpSocket* socketClient = nullptr;
 //*<Root directory access interface
-	QFileSystemModel filesystem;
+	QFileSystemModel interface_rootDir;
 	int serverState = state_LoggedOut;
 
-			/*Methods*/
+																	/*Methods*/
 
 public:
-/*Constructors and Destructor*/
+			/*Constructors and Destructor*/
 	SlaveServer();
-	SlaveServer(MasterServer*lpParent, QTcpSocket*lpClientSock);
+	SlaveServer(MasterServer *lpParent, QTcpSocket *lpClientSock);
 	~SlaveServer();
 
-/*Getters and setters*/
-	void setRootDir(QDir rootPath);
+			/*Getters and setters*/
+	void setRootDir(const QString &rootPath);
 	void setArg_username(const QString &username);
 	void setArg_Password(const QString &password);
 	void setParent(MasterServer*lpParent);
 	void setSocket(QTcpSocket*lpClientSock);
 	int getState();
 	void setState(const int state);
+	void sendMessage(FTPReply reply);
 
-
+			/**Access and commands*/
 public:
 	bool interpretCmd();
+
+
+	void removeServer();
 
 	/**Slave Server thread
 *	Implements the concept of Protocol Interpreter process,

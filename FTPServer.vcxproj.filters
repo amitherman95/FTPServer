@@ -38,6 +38,9 @@
     <ClCompile Include="FTPReply.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SlaveServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="User.hpp">

@@ -10,7 +10,7 @@
 #include <qfile.h>
 #include <iostream>
 #include <memory>
-
+#include <algorithm>
 
 MasterServer::MasterServer() :maxClients(10), limitClients(true), msgWelcome("FTP Server by Amit Herman"),
 error(false) {
@@ -182,16 +182,14 @@ void MasterServer::stopServer() {
 	std::cout << "Server stopped\n";
 }
 /*					Slots				 */
-bool MasterServer::acceptConnection() {
-	/*Creates new slave server*/
-	int bytes = 0;
-	int bytestobewritten = 0;
-	std::cout << "Client connected\n";
-	std::unique_ptr<QTcpSocket> nextClient = nullptr;
-	nextClient = (std::unique_ptr<QTcpSocket>)MainSocket.nextPendingConnection();
-	sendData(nextClient.get() , msgWelcome.toStdString().c_str(), msgWelcome.length());
-	return true;
 
+/*Creates new slave server*/
+void MasterServer::acceptConnection() {
+	QTcpSocket*next = MainSocket.nextPendingConnection();
+//If something went wrong reject the socket
+	if (!insertNewClient(next) ) {
+			next->close();
+	}
 }
 
 void MasterServer::sendData(QTcpSocket*Client, const char*data, int dataLen) {
@@ -200,5 +198,28 @@ void MasterServer::sendData(QTcpSocket*Client, const char*data, int dataLen) {
 }
 
 bool MasterServer::insertNewClient(QTcpSocket* clientSocket) {
-	listClients.push_back(make_unique<SlaveServer>(this, clientSocket));
+	locker.lock();
+	try {
+			listClients.push_back(make_unique<SlaveServer>(this, clientSocket));
+	} catch (std::bad_alloc &err) {
+		listClients.pop_back();
+		locker.unlock();
+		cerr << "Unable to add client";
+		return false;
+	}
+	locker.unlock();
+	return true;
+}
+
+void MasterServer::removeSlave(SlaveServer*client) {
+	
+	auto iterEnd = listClients.cend();
+	auto iterBegin = listClients.cbegin();
+	auto lambdaEqualPointers = [client](unique_ptr<SlaveServer> uniquePtr) {return (SlaveServer*)uniquePtr.get() == client; };
+	auto iterResult = find(iterBegin, iterEnd, lambdaEqualPointers);
+	if (iterResult != iterEnd) { //If found
+			locker.lock();
+			listClients.erase(iterResult);
+			locker.unlock();
+	}
 }

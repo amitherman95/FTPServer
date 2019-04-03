@@ -17,6 +17,8 @@
 #include <thread>
 #include "User.hpp"
 #include "SlaveServer.hpp"
+#include <queue>
+#include <mutex>
 
 using namespace std;
 /**
@@ -40,9 +42,8 @@ private:
 	QXmlStreamReader xmlConfig;
 	bool error;
 	list<User> listUsers;
-	list<unique_ptr<SlaveServer>> listClients;
-
-	
+	list<unique_ptr<SlaveServer>> listClients;//*<Critical zone
+	mutex locker;
 	/*	Constants	*/
 public:
 	static const int masterActive = 1;
@@ -97,18 +98,16 @@ public:
 	bool loadConfig(const QString &configFilename);
 
 private:
-	/**
-	* Main Server thread
-	* accepts connection requests and spawn new
-	*/
-	void MasterThread();
+	/*cleans SlaveServer from the lise once it disconnects*/
+	void removeSlave(SlaveServer*client);
 	bool insertNewClient(QTcpSocket* clientSocket);
 	void loadSettings();
 	void setError(bool err);
 	void loadUsers();
-	void sendData(QTcpSocket*Client, const char*data, int dataLen);
+	void sendData(QTcpSocket*socketClient, const char*data, int dataLen);
+
 public slots:
-	bool acceptConnection();
+	void acceptConnection();
 
 };
 #endif
