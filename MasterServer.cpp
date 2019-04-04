@@ -9,8 +9,9 @@
 #include "MasterServer.hpp"
 #include <qfile.h>
 #include <iostream>
-#include <memory>
+#include <memory.h>
 #include <algorithm>
+#include <iterator>
 
 MasterServer::MasterServer() :maxClients(10), limitClients(true), msgWelcome("FTP Server by Amit Herman"),
 error(false) {
@@ -182,7 +183,6 @@ void MasterServer::stopServer() {
 	std::cout << "Server stopped\n";
 }
 /*					Slots				 */
-
 /*Creates new slave server*/
 void MasterServer::acceptConnection() {
 	QTcpSocket*next = MainSocket.nextPendingConnection();
@@ -213,13 +213,21 @@ bool MasterServer::insertNewClient(QTcpSocket* clientSocket) {
 
 void MasterServer::removeSlave(SlaveServer*client) {
 	
-	auto iterEnd = listClients.cend();
-	auto iterBegin = listClients.cbegin();
-	auto lambdaEqualPointers = [client](unique_ptr<SlaveServer> uniquePtr) {return (SlaveServer*)uniquePtr.get() == client; };
-	auto iterResult = find(iterBegin, iterEnd, lambdaEqualPointers);
+	auto iterEnd = listClients.end();
+	auto iterBegin = listClients.begin();
+auto iterResult = find_if(iterBegin, iterEnd, [client](unique_ptr<SlaveServer>& uniquePtr) {return uniquePtr.get() == client; });
 	if (iterResult != iterEnd) { //If found
 			locker.lock();
 			listClients.erase(iterResult);
 			locker.unlock();
 	}
+
+}
+
+
+void MasterServer::lockMutex() {
+	locker.lock();
+}
+void MasterServer::unlockMutex() {
+	locker.unlock();
 }

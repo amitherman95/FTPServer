@@ -20,7 +20,6 @@
 #include <queue>
 #include <mutex>
 
-using namespace std;
 /**
 * \classMasterServer
 *		Description: Master Server represents the process that listens on port 21(ftp)
@@ -41,8 +40,8 @@ private:
 	QTcpServer MainSocket;
 	QXmlStreamReader xmlConfig;
 	bool error;
-	list<User> listUsers;
-	list<unique_ptr<SlaveServer>> listClients;//*<Critical zone
+	std::list<User> listUsers;
+	std::list<std::unique_ptr<SlaveServer>> listClients;//*<Critical zone
 	mutex locker;
 	/*	Constants	*/
 public:
@@ -88,6 +87,9 @@ public:
 	void stopServer();
 	QString getWelcomeMsg();
 	bool hasError();
+	void removeSlave(SlaveServer*client);
+	void lockMutex();
+	void unlockMutex();
 
 	/**
 	*Exceptions:Problems with xml syntax
@@ -99,7 +101,7 @@ public:
 
 private:
 	/*cleans SlaveServer from the lise once it disconnects*/
-	void removeSlave(SlaveServer*client);
+	
 	bool insertNewClient(QTcpSocket* clientSocket);
 	void loadSettings();
 	void setError(bool err);

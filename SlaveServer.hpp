@@ -1,6 +1,6 @@
 /*
-																SlaveServer.hpp
-															Slave server header
+																				SlaveServer.hpp
+																			Slave server header
 Author:Amit Herman
 */
 
@@ -13,18 +13,17 @@ class MasterServer;
 
 #include "qstring.h"
 #include "User.hpp"
-#include <QtWidgets/QFileSystemModel>
+#include <QtWidgets/qfilesystemmodel.h>
 #include <QtNetwork/qtcpsocket.h>
 #include <thread>
 #include "FTPReply.hpp"
-
 
 /**\class SlaveServer class
 *	Represents the connection to each client
 	and handles user control.
 */
-using namespace std;
-class SlaveServer {
+class SlaveServer: public QObject {
+	Q_OBJECT
 																		/*Constants*/
 public:
 	static const int state_LoggedOut = 0;
@@ -39,17 +38,17 @@ private:
 	User *user=nullptr;
 	MasterServer* parentMaster = nullptr;
 /**<Protocol Interpreter thread, receive commands from client*/
-	thread threadPI;
+	std::thread threadPI;
 	QTcpSocket* socketClient = nullptr;
 //*<Root directory access interface
-	QFileSystemModel interface_rootDir;
+	QFileSystemModel* interface_rootDir;
 	int serverState = state_LoggedOut;
 
 																	/*Methods*/
 
 public:
 			/*Constructors and Destructor*/
-	SlaveServer();
+	SlaveServer()=delete;
 	SlaveServer(MasterServer *lpParent, QTcpSocket *lpClientSock);
 	~SlaveServer();
 
@@ -62,12 +61,14 @@ public:
 	int getState();
 	void setState(const int state);
 	void sendMessage(FTPReply reply);
-
+	
 			/**Access and commands*/
 public:
 	bool interpretCmd();
 
-
+	/**In case the client disconnect, this function call removeClient from the master server and removes the client
+	*from the list of
+	*/
 	void removeServer();
 
 	/**Slave Server thread

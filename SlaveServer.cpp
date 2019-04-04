@@ -1,6 +1,6 @@
 /*
-																		SlaveServer.cpp
-															Slave server implementation
+																				SlaveServer.cpp
+																	Slave server implementation
 Author:Amit Herman
 amitherman@mail.tau.ac.il
 */
@@ -14,7 +14,7 @@ SlaveServer::~SlaveServer() {
 }
 
 void SlaveServer::setRootDir(const QString &rootPath) {
-	interface_rootDir.setRootPath(rootPath);
+	interface_rootDir->setRootPath(rootPath);
 }
 void SlaveServer::setArg_username(const QString &username) {
 	loginArgUsername = username;
@@ -35,12 +35,24 @@ void SlaveServer::setState(const int state) {
 	serverState = state;
 }
 
-void SlaveServer::sendMessage(FTPReply reply) {
+void SlaveServer::sendMessage( FTPReply reply) {
 	QByteArray block;
 	QDataStream out(&block, QIODevice::WriteOnly);
-	out << std::dec << reply.get_code() << " " << reply.get_msg().toStdString().c_str()	 << '\n';
+	out <<  reply.get_code() << " " << reply.get_msg() << '\n';
+	socketClient->write(block);
 	while (socketClient->flush()) {}
 }
 
-SlaveServer::SlaveServer(MasterServer*lpParent, QTcpSocket*lpClientSock):socketClient(lpClientSock), parentMaster(lpParent)
-{}
+
+void SlaveServer::ControlThread() {
+	FTPReply message(220, "Welcome\n");
+	sendMessage(message);
+	parentMaster->removeSlave(this);
+	return;
+}
+
+SlaveServer::SlaveServer(MasterServer*lpParent, QTcpSocket*lpClientSock) :socketClient(lpClientSock),
+parentMaster(lpParent) {
+	/*Initialize the thread by move operator*/
+	threadPI = std::thread{ &SlaveServer::ControlThread, this };
+	}
