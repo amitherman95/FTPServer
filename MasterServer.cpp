@@ -15,12 +15,11 @@
 
 MasterServer::MasterServer() :maxClients(10), limitClients(true), msgWelcome("FTP Server by Amit Herman"),
 error(false) {
-	QObject::connect(&MainSocket, &QTcpServer::newConnection, this, &MasterServer::acceptConnection);
+	
 }
 
 MasterServer::MasterServer(const QString &pathConfig) {
 	error=loadConfig(pathConfig);
-	QObject::connect(&MainSocket, &QTcpServer::newConnection, this, &MasterServer::acceptConnection);
 }
 
 void MasterServer::setMaxClients(int max) {
@@ -169,39 +168,33 @@ bool MasterServer::startServer() {
 	}
 	if (this->serverState == MasterServer::masterStopped) {
 			this->serverState = MasterServer::masterActive;
-			if (!MainSocket.listen(QHostAddress::Any, (quint16)ftpPort)) {
-				return false;
-			}
+
+			//exception area
+			acceptor = make_unique<tcp::acceptor>(io_context, tcp::endpoint(tcp::v4(), ftpPort));
+
+			executeMainThread();
 			std::cout << "Server is active.\n";
 	}
 	return true;
 }
 void MasterServer::stopServer() {
 	if (this->serverState != MasterServer::masterStopped) {
-			MainSocket.close();
+			this->acceptor->close();
+			this->serverState = MasterServer::masterStopped;
 	}
 	std::cout << "Server stopped\n";
 }
-/*					Slots				 */
-/*Creates new slave server*/
-void MasterServer::acceptConnection() {
-	QTcpSocket*next = MainSocket.nextPendingConnection();
-//If something went wrong reject the socket
-	if (!insertNewClient(next) ) {
-			next->close();
-	}
+
+
+void MasterServer::sendData( tcp::socket& clientSocket, const char*data, int dataLen) {
+	//To be added
 }
 
-void MasterServer::sendData(QTcpSocket*Client, const char*data, int dataLen) {
-	Client->write(data, dataLen);
-	while (Client->flush()) {}
-}
-
-bool MasterServer::insertNewClient(QTcpSocket* clientSocket) {
+bool MasterServer::insertNewClient( tcp::socket& clientSocket){
 	locker.lock();
 	try {
 			listClients.push_back(make_unique<SlaveServer>(this, clientSocket));
-	} catch (std::bad_alloc &err) {
+	} catch (std::exception &err) {
 		listClients.pop_back();
 		locker.unlock();
 		cerr << "Unable to add client";
@@ -212,22 +205,41 @@ bool MasterServer::insertNewClient(QTcpSocket* clientSocket) {
 }
 
 void MasterServer::removeSlave(SlaveServer*client) {
-	
+
 	auto iterEnd = listClients.end();
 	auto iterBegin = listClients.begin();
-auto iterResult = find_if(iterBegin, iterEnd, [client](unique_ptr<SlaveServer>& uniquePtr) {return uniquePtr.get() == client; });
+	auto iterResult = find_if(iterBegin, iterEnd, [client](unique_ptr<SlaveServer>& uniquePtr) {return uniquePtr.get() == client; });
 	if (iterResult != iterEnd) { //If found
-			locker.lock();
-			listClients.erase(iterResult);
-			locker.unlock();
+		locker.lock();
+		listClients.erase(iterResult);
+		locker.unlock();
 	}
 
 }
-
 
 void MasterServer::lockMutex() {
 	locker.lock();
 }
 void MasterServer::unlockMutex() {
 	locker.unlock();
+}
+
+void MasterServer::executeMainThread() {
+	threadMasterThread = std::thread{&MasterServer::MasterThread, this};
+}
+
+void MasterServer::MasterThread() {
+	tcp::socket socket(io_context);
+	boost::system::error_code ignored_error;
+
+	while (1) {
+		try {
+			acceptor->accept(socket);
+			boost::asio::write(socket, boost::asio::buffer("220 Welcome"), ignored_error);
+			socket.close();
+		} catch (std::exception &e) {
+			std::cerr << e.what() << std::endl;
+		}
+
+	}
 }

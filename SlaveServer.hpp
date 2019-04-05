@@ -14,9 +14,11 @@ class MasterServer;
 #include "qstring.h"
 #include "User.hpp"
 #include <QtWidgets/qfilesystemmodel.h>
-#include <QtNetwork/qtcpsocket.h>
+#include <boost/asio.hpp>
 #include <thread>
 #include "FTPReply.hpp"
+
+using boost::asio::ip::tcp;
 
 /**\class SlaveServer class
 *	Represents the connection to each client
@@ -39,17 +41,17 @@ private:
 	MasterServer* parentMaster = nullptr;
 /**<Protocol Interpreter thread, receive commands from client*/
 	std::thread threadPI;
-	QTcpSocket* socketClient = nullptr;
+	tcp::socket socketClient;
 //*<Root directory access interface
 	QFileSystemModel* interface_rootDir;
 	int serverState = state_LoggedOut;
-
+	boost::asio::io_context io_context;
 																	/*Methods*/
 
 public:
 			/*Constructors and Destructor*/
 	SlaveServer()=delete;
-	SlaveServer(MasterServer *lpParent, QTcpSocket *lpClientSock);
+	SlaveServer(MasterServer *lpParent, tcp::socket& acceptedClientSocket);
 	~SlaveServer();
 
 			/*Getters and setters*/
@@ -57,7 +59,7 @@ public:
 	void setArg_username(const QString &username);
 	void setArg_Password(const QString &password);
 	void setParent(MasterServer*lpParent);
-	void setSocket(QTcpSocket*lpClientSock);
+	void setSocket( tcp::socket &acceptedClientSocket);
 	int getState();
 	void setState(const int state);
 	void sendMessage(FTPReply reply);

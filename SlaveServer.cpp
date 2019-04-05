@@ -10,7 +10,7 @@ amitherman@mail.tau.ac.il
 
 
 SlaveServer::~SlaveServer() {
-	socketClient->close();
+	socketClient.close();
 }
 
 void SlaveServer::setRootDir(const QString &rootPath) {
@@ -25,8 +25,8 @@ void SlaveServer::setArg_Password(const QString &password) {
 void SlaveServer::setParent(MasterServer*lpParent) {
 	parentMaster = lpParent;
 }
-void SlaveServer::setSocket(QTcpSocket*lpClientSock) {
-	socketClient = lpClientSock;
+void SlaveServer::setSocket( tcp::socket &acceptedClientSocket) {
+	this->socketClient = std::move(acceptedClientSocket);
 }
 int SlaveServer::getState() {
 	return serverState;
@@ -36,11 +36,7 @@ void SlaveServer::setState(const int state) {
 }
 
 void SlaveServer::sendMessage( FTPReply reply) {
-	QByteArray block;
-	QDataStream out(&block, QIODevice::WriteOnly);
-	out <<  reply.get_code() << " " << reply.get_msg() << '\n';
-	socketClient->write(block);
-	while (socketClient->flush()) {}
+
 }
 
 
@@ -51,8 +47,10 @@ void SlaveServer::ControlThread() {
 	return;
 }
 
-SlaveServer::SlaveServer(MasterServer*lpParent, QTcpSocket*lpClientSock) :socketClient(lpClientSock),
-parentMaster(lpParent) {
+SlaveServer::SlaveServer(MasterServer*lpParent, tcp::socket& acceptedClientSocket) :parentMaster(lpParent),
+socketClient(io_context) {
+	/*We transfer ownership to the the member socket of this class*/
+	socketClient=std::move(acceptedClientSocket);
 	/*Initialize the thread by move operator*/
 	threadPI = std::thread{ &SlaveServer::ControlThread, this };
 	}

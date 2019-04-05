@@ -11,14 +11,14 @@
 
 
 #include <QtCore/qxmlstream.h>
-#include <QtNetwork/qtcpserver.h>
-#include <QtNetwork/qtcpsocket.h>
+#include <boost/asio.hpp>
 #include <iostream>
 #include <thread>
 #include "User.hpp"
 #include "SlaveServer.hpp"
 #include <queue>
 #include <mutex>
+using boost::asio::ip::tcp;
 
 /**
 * \classMasterServer
@@ -37,12 +37,16 @@ private:
 	bool limitClients; //*<Indicates whether there is a limit to the number of clients
 	QString msgWelcome;
 	int serverState=masterStopped;
-	QTcpServer MainSocket;
+	//QTcpServer MainSocket;
 	QXmlStreamReader xmlConfig;
 	bool error;
 	std::list<User> listUsers;
 	std::list<std::unique_ptr<SlaveServer>> listClients;//*<Critical zone
 	mutex locker;
+	boost::asio::io_context io_context;
+	unique_ptr<tcp::acceptor> acceptor;
+	std::thread threadMasterThread;
+
 	/*	Constants	*/
 public:
 	static const int masterActive = 1;
@@ -87,6 +91,7 @@ public:
 	void stopServer();
 	QString getWelcomeMsg();
 	bool hasError();
+/*cleans SlaveServer from the lise once it disconnects*/
 	void removeSlave(SlaveServer*client);
 	void lockMutex();
 	void unlockMutex();
@@ -98,18 +103,16 @@ public:
 	*\return True if error has occured, false otherwise
 	*/
 	bool loadConfig(const QString &configFilename);
+	void executeMainThread();
 
 private:
-	/*cleans SlaveServer from the lise once it disconnects*/
-	
-	bool insertNewClient(QTcpSocket* clientSocket);
+	bool insertNewClient( tcp::socket& clientSocket);
 	void loadSettings();
 	void setError(bool err);
 	void loadUsers();
-	void sendData(QTcpSocket*socketClient, const char*data, int dataLen);
-
-public slots:
-	void acceptConnection();
+	void sendData( tcp::socket &clientSocket, const char*data, int dataLen);
+	/*Master Thread, accept connections*/
+	void MasterThread();
 
 };
 #endif
