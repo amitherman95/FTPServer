@@ -110,7 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FTPReply.hpp" />
-    <QtMoc Include="SlaveServer.hpp" />
+    <ClInclude Include="SlaveServer.hpp" />
     <ClInclude Include="User.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

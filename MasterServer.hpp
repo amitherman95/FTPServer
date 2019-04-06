@@ -42,7 +42,7 @@ private:
 	bool error;
 	std::list<User> listUsers;
 	std::list<std::unique_ptr<SlaveServer>> listClients;//*<Critical zone
-	mutex locker;
+	std::mutex locker;
 	boost::asio::io_context io_context;
 	unique_ptr<tcp::acceptor> acceptor;
 	std::thread threadMasterThread;

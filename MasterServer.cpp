@@ -1,6 +1,6 @@
 /*
-*																		MasterServer.cpp
-*														Master Server class implementation
+*																					MasterServer.cpp
+*																	Master Server class implementation
 *
 * Author:Amit Herman
 *
@@ -185,22 +185,22 @@ void MasterServer::stopServer() {
 	std::cout << "Server stopped\n";
 }
 
-
 void MasterServer::sendData( tcp::socket& clientSocket, const char*data, int dataLen) {
 	//To be added
 }
 
 bool MasterServer::insertNewClient( tcp::socket& clientSocket){
-	locker.lock();
+	lockMutex();
 	try {
 			listClients.push_back(make_unique<SlaveServer>(this, clientSocket));
+			unlockMutex();
 	} catch (std::exception &err) {
 		listClients.pop_back();
-		locker.unlock();
+			unlockMutex();
 		cerr << "Unable to add client";
 		return false;
 	}
-	locker.unlock();
+	
 	return true;
 }
 
@@ -210,9 +210,9 @@ void MasterServer::removeSlave(SlaveServer*client) {
 	auto iterBegin = listClients.begin();
 	auto iterResult = find_if(iterBegin, iterEnd, [client](unique_ptr<SlaveServer>& uniquePtr) {return uniquePtr.get() == client; });
 	if (iterResult != iterEnd) { //If found
-		locker.lock();
+		lockMutex();
 		listClients.erase(iterResult);
-		locker.unlock();
+		unlockMutex();
 	}
 
 }
@@ -230,16 +230,16 @@ void MasterServer::executeMainThread() {
 
 void MasterServer::MasterThread() {
 	tcp::socket socket(io_context);
-	boost::system::error_code ignored_error;
 
 	while (1) {
 		try {
-			acceptor->accept(socket);
-			boost::asio::write(socket, boost::asio::buffer("220 Welcome"), ignored_error);
-			socket.close();
-		} catch (std::exception &e) {
-			std::cerr << e.what() << std::endl;
+				acceptor->accept(socket);
+				if (!insertNewClient(socket)) //If failed
+						throw std::exception("Memory allocation failed");
+				socket.release();
+				socket.close();
+		}catch (std::exception &e) {
+				std::cerr << e.what() << std::endl;
 		}
-
 	}
-}
+}	

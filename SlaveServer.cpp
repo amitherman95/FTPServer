@@ -10,7 +10,7 @@ amitherman@mail.tau.ac.il
 
 
 SlaveServer::~SlaveServer() {
-	socketClient.close();
+	//
 }
 
 void SlaveServer::setRootDir(const QString &rootPath) {
@@ -41,16 +41,20 @@ void SlaveServer::sendMessage( FTPReply reply) {
 
 
 void SlaveServer::ControlThread() {
-	FTPReply message(220, "Welcome\n");
-	sendMessage(message);
+	//FTPReply message(220, "Welcome\n");
+	//sendMessage(message);
+	boost::system::error_code ignored_error;
+	boost::asio::write(socketClient, boost::asio::buffer("220 Welcome"), ignored_error);
+	socketClient.close();
+	threadPI.detach();
 	parentMaster->removeSlave(this);
 	return;
 }
 
 SlaveServer::SlaveServer(MasterServer*lpParent, tcp::socket& acceptedClientSocket) :parentMaster(lpParent),
-socketClient(io_context) {
+																																										socketClient(std::move(acceptedClientSocket))
+{
 	/*We transfer ownership to the the member socket of this class*/
-	socketClient=std::move(acceptedClientSocket);
-	/*Initialize the thread by move operator*/
+		/*Initialize the thread by move operator*/
 	threadPI = std::thread{ &SlaveServer::ControlThread, this };
 	}

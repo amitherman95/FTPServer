@@ -24,8 +24,8 @@ using boost::asio::ip::tcp;
 *	Represents the connection to each client
 	and handles user control.
 */
-class SlaveServer: public QObject {
-	Q_OBJECT
+class SlaveServer {
+
 																		/*Constants*/
 public:
 	static const int state_LoggedOut = 0;
