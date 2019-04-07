@@ -80,6 +80,13 @@ public:
 private:
 	void ControlThread();
 
+	/*We go through the buffer, char by char, and append it to Dest
+		When we stream CRLF char, this is a command line, and therefore we instruct the Protocol interpreter to
+		ensure the command is valid and execute it
+		the string object destTerminal acts excatly like computer terminal/
+	*/
+	void streamToTerminal(const char *lp_bufferData,size_t sizeData , std::string &destTerminal);
+
 };
 
 #endif

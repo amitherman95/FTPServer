@@ -10,7 +10,7 @@ amitherman@mail.tau.ac.il
 
 
 SlaveServer::~SlaveServer() {
-	//
+	socketClient.close();
 }
 
 void SlaveServer::setRootDir(const QString &rootPath) {
@@ -41,20 +41,49 @@ void SlaveServer::sendMessage( FTPReply reply) {
 
 
 void SlaveServer::ControlThread() {
-	//FTPReply message(220, "Welcome\n");
-	//sendMessage(message);
+	boost::asio::mutable_buffer buffer;
 	boost::system::error_code ignored_error;
-	boost::asio::write(socketClient, boost::asio::buffer("220 Welcome"), ignored_error);
-	socketClient.close();
-	threadPI.detach();
-	parentMaster->removeSlave(this);
-	return;
+	std::string commandLineTerminal;
+	size_t sizeReceived=0;
+
+	try {
+			boost::asio::write(socketClient, boost::asio::buffer("220 Welcome"), ignored_error);
+			while (1) {
+				sizeReceived = boost::asio::read(socketClient, buffer);
+				
+			}
+	}catch (boost::system::system_error &e) {
+			cerr << "Error " << std::dec << e.code() << ":" << e.what();
+			threadPI.detach();
+			parentMaster->removeSlave(this);
+			return;
+	}
+	
+	
+	
 }
 
 SlaveServer::SlaveServer(MasterServer*lpParent, tcp::socket& acceptedClientSocket) :parentMaster(lpParent),
-																																										socketClient(std::move(acceptedClientSocket))
-{
+																															socketClient(std::move(acceptedClientSocket)) {
+
 	/*We transfer ownership to the the member socket of this class*/
-		/*Initialize the thread by move operator*/
+
+	/*Initialize the thread by move operator*/
 	threadPI = std::thread{ &SlaveServer::ControlThread, this };
 	}
+
+void SlaveServer::streamToTerminal(const char *lp_buffer, size_t sizeData, std::string &destTerminal) {
+	const char LF = '\n'; //Line feed
+	const char CR = '\r';// Carriage return
+	auto it = destTerminal.end();// The Iterator represesnts the carrier of the terminal
+
+	//since boost::mutable_buffer doesnt have iterators we'll just use regular loop
+	for (int i = 0; i < sizeData; i++) {
+		switch (lp_buffer[i]) {
+		case(CR):
+			
+
+			}
+	}
+
+}
