@@ -1,3 +1,7 @@
+/*Windows version macros*/
+#define WINVER 0x0A00
+#define _WIN32_WINNT 0x0A00
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/qxmlstream.h>
 #include "qfile.h"

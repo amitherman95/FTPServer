@@ -17,6 +17,7 @@ class MasterServer;
 #include <boost/asio.hpp>
 #include <thread>
 #include "FTPReply.hpp"
+#include "VirtualTerminal.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -46,6 +47,7 @@ private:
 	QFileSystemModel* interface_rootDir;
 	int serverState = state_LoggedOut;
 	boost::asio::io_context io_context;
+	Terminal terminal;
 																	/*Methods*/
 
 public:

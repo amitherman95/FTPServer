@@ -37,7 +37,6 @@ private:
 	bool limitClients; //*<Indicates whether there is a limit to the number of clients
 	QString msgWelcome;
 	int serverState=masterStopped;
-	//QTcpServer MainSocket;
 	QXmlStreamReader xmlConfig;
 	bool error;
 	std::list<User> listUsers;
@@ -46,6 +45,7 @@ private:
 	boost::asio::io_context io_context;
 	unique_ptr<tcp::acceptor> acceptor;
 	std::thread threadMasterThread;
+	
 
 	/*	Constants	*/
 public:

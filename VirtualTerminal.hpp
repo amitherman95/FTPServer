@@ -10,6 +10,7 @@ amitherman@mail.tau.ac.il
 
 #include <iostream>
 #include <FTPReply.hpp>
+#include <vector>
 /*Forward decleration
 /*must add '#include "SlaveServer.hpp"' into implementation
 /**/
@@ -45,13 +46,11 @@ private:
 
 			/*Methods*/
 public:
-	Terminal(SlaveServer*parent);
-	~Terminal();
+	Terminal(SlaveServer*lp_parent);
+	~Terminal()=default;
 	void interpretCommandLine();
-	void streamIntoTerminal();
-	void setBuffer();
-
-private:
+	void streamIntoTerminal(vector<unsigned char> buffer);
+	void executeRemoteInterrupt();
 
 };
 

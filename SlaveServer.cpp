@@ -41,16 +41,18 @@ void SlaveServer::sendMessage( FTPReply reply) {
 
 
 void SlaveServer::ControlThread() {
-	boost::asio::mutable_buffer buffer;
-	boost::system::error_code ignored_error;
+	const int buffer_size = 1; //stream one by one
+	vector<unsigned char> ByteBuff;
+	boost::system::error_code ec;
 	std::string commandLineTerminal;
 	size_t sizeReceived=0;
 
+	ByteBuff.resize(buffer_size);
 	try {
-			boost::asio::write(socketClient, boost::asio::buffer("220 Welcome"), ignored_error);
+			boost::asio::write(socketClient, boost::asio::buffer("220 Welcome"), ec);
 			while (1) {
-				sizeReceived = boost::asio::read(socketClient, buffer);
-				
+				sizeReceived = socketClient.read_some(boost::asio::buffer(ByteBuff), ec);
+				terminal.streamIntoTerminal(ByteBuff);
 			}
 	}catch (boost::system::system_error &e) {
 			cerr << "Error " << std::dec << e.code() << ":" << e.what();
@@ -64,7 +66,8 @@ void SlaveServer::ControlThread() {
 }
 
 SlaveServer::SlaveServer(MasterServer*lpParent, tcp::socket& acceptedClientSocket) :parentMaster(lpParent),
-																															socketClient(std::move(acceptedClientSocket)) {
+																															socketClient(std::move(acceptedClientSocket)),
+																															terminal(this) {
 
 	/*We transfer ownership to the the member socket of this class*/
 
@@ -72,18 +75,3 @@ SlaveServer::SlaveServer(MasterServer*lpParent, tcp::socket& acceptedClientSocke
 	threadPI = std::thread{ &SlaveServer::ControlThread, this };
 	}
 
-void SlaveServer::streamToTerminal(const char *lp_buffer, size_t sizeData, std::string &destTerminal) {
-	const char LF = '\n'; //Line feed
-	const char CR = '\r';// Carriage return
-	auto it = destTerminal.end();// The Iterator represesnts the carrier of the terminal
-
-	//since boost::mutable_buffer doesnt have iterators we'll just use regular loop
-	for (int i = 0; i < sizeData; i++) {
-		switch (lp_buffer[i]) {
-		case(CR):
-			
-
-			}
-	}
-
-}
