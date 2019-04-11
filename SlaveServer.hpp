@@ -83,7 +83,6 @@ public:
 private:
 	void ControlThread();
 
-	void executeCmd(const vector<string> &cmdParts);
 
 };
 

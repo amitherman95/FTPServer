@@ -6,8 +6,8 @@
 /**/
 #include "VirtualTerminal.hpp"
 #include "SlaveServer.hpp"
-#include  <boost\algorithm\string.hpp>
-#include <ftpcmds.hpp>
+#include  <boost/algorithm/string.hpp>
+
 
 Terminal::Terminal(SlaveServer*lp_parent) :parent(lp_parent){}
 
@@ -16,7 +16,8 @@ void Terminal::streamIntoTerminal(const vector<unsigned char>buffer) {
 	for (int i = 0; i < buffer.size(); i++) {
 		switch (buffer[i]) {
 		case LF:
-				processCommandLine();
+				cmdSplitVector=processCommandLine();
+				executeCmd(cmdSplitVector);
 				terminal.clear();
 				break;
 		case IP:
@@ -48,13 +49,3 @@ void Terminal::executeRemoteInterrupt(){
 
 }
 
-/*Instruct the slave server what need to be done*/
-void Terminal::executeCmd(const vector<string> &cmdParts) {
-	if (cmdParts[0] == FTP::cmdUSER) {
-			parent->execCmdUser(cmdParts);
-	}else if (cmdParts[0] == FTP::cmdPASS) {
-			parent->execCmdPass(cmdParts);
-	}else {
-			parent->sendReply(500,"Command unrecognized");
-	}
-}

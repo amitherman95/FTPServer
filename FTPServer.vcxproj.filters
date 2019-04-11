@@ -44,6 +44,9 @@
     <ClCompile Include="ftpcmds.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="virtualterminal_executecmd_.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="User.hpp">

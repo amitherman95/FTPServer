@@ -71,10 +71,11 @@ SlaveServer::SlaveServer(MasterServer*lpParent, tcp::socket& acceptedClientSocke
 
 
 void SlaveServer::sendReply(int code, const string&raw_message) {
-	string message;
-	ostringstream stream(message);
-	stream << std::dec << code << " " << raw_message <<endl;
-	boost::asio::write(socketClient, boost::asio::buffer(message));
+	const string crlf = "\r\n";
+	stringbuf message;
+	ostream stream(&message);
+	stream << std::dec << code << " " << raw_message << crlf;
+	boost::asio::write(socketClient, boost::asio::buffer(message.str()));
 }
 
 
@@ -103,7 +104,11 @@ void SlaveServer::execCmdPass(const vector<string> &cmdParts) {
 					sendReply(530, "No such username");
 			}else if (user->isPassRight(cmdParts.at(2))){
 					this->user = user;
+			/*Assuming the path is correct*/
+					this->setRootDir(user->getRootDir());
 					sendReply(230, "Logged in");
+			}else {
+					sendReply(530, "Wrong password");
 			}
 	}
 }

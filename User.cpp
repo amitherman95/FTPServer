@@ -75,8 +75,8 @@ void User::setRootDir(const QString &rootDir) {
 	rootdir = rootDir;
 }
 
-std::string User::getRootDir() {
-	return rootdir.toStdString();
+QString User::getRootDir() {
+	return rootdir;
 }
 
 bool User::getCanRead() {

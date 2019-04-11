@@ -60,7 +60,7 @@ public:
 	void setWrite(bool write);
 	void setDel(bool del);
 	void setManDir(bool manDir);
-	std::string getRootDir();
+	QString getRootDir();
 	bool getCanRead();
 	bool getCanWrite();
 	bool getCanDel();
