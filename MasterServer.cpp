@@ -243,3 +243,12 @@ void MasterServer::MasterThread() {
 		}
 	}
 }	
+
+
+User* MasterServer::findUser(const string& username) {
+	auto it = find_if(listUsers.begin(), listUsers.end(), [username](User &user) {return user.isUser(username); });
+	if (it != listUsers.end()) {
+			return &(*it);
+	}		
+	else return NULL;
+}

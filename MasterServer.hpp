@@ -104,6 +104,7 @@ public:
 	*/
 	bool loadConfig(const QString &configFilename);
 	void executeMainThread();
+	User* findUser(const string& username);
 
 private:
 	bool insertNewClient( tcp::socket& clientSocket);

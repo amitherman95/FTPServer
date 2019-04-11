@@ -7,7 +7,7 @@ amitherman@mail.tau.ac.il
 
 #include "SlaveServer.hpp"
 #include "MasterServer.hpp"
-
+#include "ftpcmds.hpp"
 
 SlaveServer::~SlaveServer() {
 	socketClient.close();
@@ -16,10 +16,10 @@ SlaveServer::~SlaveServer() {
 void SlaveServer::setRootDir(const QString &rootPath) {
 	interface_rootDir->setRootPath(rootPath);
 }
-void SlaveServer::setArg_username(const QString &username) {
+void SlaveServer::setArg_username(const string &username) {
 	loginArgUsername = username;
 }
-void SlaveServer::setArg_Password(const QString &password) {
+void SlaveServer::setArg_Password(const string &password) {
 	loginArgPassword = password;
 }
 void SlaveServer::setParent(MasterServer*lpParent) {
@@ -45,15 +45,14 @@ void SlaveServer::ControlThread() {
 
 	bytesBuffer.resize(buffer_size);
 	try {
-			sendReply(FTPReply(220, "Welcome"));
+			sendReply(220, "Welcome");
 			while (1) {
 				sizeReceived = socketClient.read_some(boost::asio::buffer(bytesBuffer));
 				terminal.streamIntoTerminal(bytesBuffer);
 			}
 	}catch (const boost::system::system_error &e) {
 			cerr << "Error " << std::dec << e.code() << ":" << e.what();
-			threadPI.detach();
-			parentMaster->removeSlave(this);
+			removeServer();
 			return;
 	}
 	
@@ -67,12 +66,44 @@ SlaveServer::SlaveServer(MasterServer*lpParent, tcp::socket& acceptedClientSocke
 
 	/*Initialize the thread by move operator*/
 	threadPI = std::thread{ &SlaveServer::ControlThread, this };
+
 	}
 
 
-void SlaveServer::sendReply( FTPReply reply) {
+void SlaveServer::sendReply(int code, const string&raw_message) {
 	string message;
 	ostringstream stream(message);
-	stream << std::dec << reply.get_code() << " " << reply.get_msg().toStdString();
+	stream << std::dec << code << " " << raw_message <<endl;
 	boost::asio::write(socketClient, boost::asio::buffer(message));
+}
+
+
+void SlaveServer::removeServer() {
+	threadPI.detach();
+	parentMaster->removeSlave(this);
+}
+
+
+
+void SlaveServer::execCmdUser(const vector<string> &cmdParts) {
+	if (cmdParts.size() != 2) {
+			sendReply(501, "Syntax error");
+	}else {
+			setArg_username(cmdParts.at(1));
+	}
+}
+
+void SlaveServer::execCmdPass(const vector<string> &cmdParts) {
+	User*user;
+	if (cmdParts.size() != 2) {
+			sendReply(501, "Syntax error");
+	}else {
+			user = parentMaster->findUser(loginArgUsername);
+			if (user = NULL) {
+					sendReply(530, "No such username");
+			}else if (user->isPassRight(cmdParts.at(2))){
+					this->user = user;
+					sendReply(230, "Logged in");
+			}
+	}
 }

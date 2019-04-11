@@ -53,7 +53,7 @@ public:
 	vector<string> processCommandLine();
 	void streamIntoTerminal(const vector<unsigned char>commandLine);
 	void executeRemoteInterrupt();
-	bool validateCommand(const vector<string> &cmdParts);
+	void executeCmd(const vector<string> &cmdParts);
 };
 
 #endif

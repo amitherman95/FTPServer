@@ -99,9 +99,7 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ftpcmds.cpp" />
     <ClCompile Include="ftpcmds.hpp" />
-    <ClCompile Include="FTPReply.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MasterServer.cpp" />
     <ClCompile Include="SlaveServer.cpp" />
@@ -112,7 +110,6 @@
     <QtMoc Include="MasterServer.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FTPReply.hpp" />
     <ClInclude Include="SlaveServer.hpp" />
     <ClInclude Include="User.hpp" />
     <ClInclude Include="VirtualTerminal.hpp" />

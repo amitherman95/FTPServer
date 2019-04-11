@@ -9,7 +9,7 @@
 
 User::User(): canWrite(false), canRead(false), canDelFiles(false), canManipulateDirs(false) {}
 
-User::User(const QString &username, const QString &password, bool read ,
+User::User(const std::string &username, const std::string &password, bool read ,
 	bool write  ,bool delFiles, bool manipulateDirs ) {
 
 	this->username = username;
@@ -45,19 +45,19 @@ User::User(User&& src) noexcept{
 
 }
 
-bool User::isPassRight(const QString &pass) {
+bool User::isPassRight(const std::string &pass) {
 	return password == pass;
 }
 
-bool User:: isUser(const QString &userName) {
+bool User:: isUser(const std::string &userName) {
 	return username.compare(username)==0;
 }
 
 void User::setPass(const QString &pass) {
-	password = pass;
+	password = pass.toStdString();
 }
 void User::setUsername(const QString &user) {
-	username = user;
+	username = user.toStdString();
 }
 void User::setRead(bool read) {
 	canRead = read;
@@ -75,8 +75,8 @@ void User::setRootDir(const QString &rootDir) {
 	rootdir = rootDir;
 }
 
-QString User::getRootDir() {
-	return rootdir;
+std::string User::getRootDir() {
+	return rootdir.toStdString();
 }
 
 bool User::getCanRead() {

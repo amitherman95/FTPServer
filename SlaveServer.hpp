@@ -16,7 +16,6 @@ class MasterServer;
 #include <QtWidgets/qfilesystemmodel.h>
 #include <boost/asio.hpp>
 #include <thread>
-#include "FTPReply.hpp"
 #include "VirtualTerminal.hpp"
 
 using boost::asio::ip::tcp;
@@ -36,8 +35,8 @@ public:
 
 																			/*Members*/
 private:
-	QString loginArgUsername;
-	QString loginArgPassword;
+	string loginArgUsername;
+	string loginArgPassword;
 	User *user=nullptr;
 	MasterServer* parentMaster = nullptr;
 /**<Protocol Interpreter thread, receive commands from client*/
@@ -58,17 +57,19 @@ public:
 
 			/*Getters and setters*/
 	void setRootDir(const QString &rootPath);
-	void setArg_username(const QString &username);
-	void setArg_Password(const QString &password);
+	void setArg_username(const string &username);
+	void setArg_Password(const string &password);
 	void setParent(MasterServer*lpParent);
 	void setSocket( tcp::socket &acceptedClientSocket);
 	int getState();
 	void setState(const int state);
-	void sendReply(FTPReply reply);
-	
-			/**Access and commands*/
+	void sendReply(int code, const string&message);
+
+			/*Access Control Commands*/
 public:
-	bool interpretCmd();
+	void execCmdUser(const vector<string> &cmdParts);
+	void execCmdPass(const vector<string> &cmdParts);
+
 
 	/**In case the client disconnect, this function call removeClient from the master server and removes the client
 	*from the list of
@@ -82,12 +83,7 @@ public:
 private:
 	void ControlThread();
 
-	/*We go through the buffer, char by char, and append it to Dest
-		When we stream CRLF char, this is a command line, and therefore we instruct the Protocol interpreter to
-		ensure the command is valid and execute it
-		the string object destTerminal acts excatly like computer terminal/
-	*/
-	void streamToTerminal(const char *lp_bufferData,size_t sizeData , std::string &destTerminal);
+	void executeCmd(const vector<string> &cmdParts);
 
 };
 

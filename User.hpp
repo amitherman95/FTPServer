@@ -18,8 +18,8 @@ The class should be compatible with Standard Library containers
 */
 class User {
 private:
-	QString username;
-	QString password;
+	std::string username;
+	std::string password;
 	QString rootdir;
 	bool canRead;
 	bool canWrite;
@@ -42,16 +42,16 @@ public:
 	/**Comparison opeator overload*/
 	bool operator==(const User& rhs);
 	/**Check whether the pass is right*/
-	bool isPassRight(const QString& pass);
+	bool isPassRight(const std::string& pass);
 
 	/**Yet another constructor*/
-	User(const QString& username, const QString& password, bool read = false,
+	User(const std::string& username, const std::string& password, bool read = false,
 		bool write = false, bool delFiles = false, bool manipulateDirs = false);
 
 	/**\returnReturns true if the username matches to the parameter
 	* \param Username string to compare with the object member.
 	*/
-	bool isUser(const QString &userName);
+	bool isUser(const std::string &userName);
 
 	void setPass(const QString &pass);
 	void setUsername(const QString &user);
@@ -60,7 +60,7 @@ public:
 	void setWrite(bool write);
 	void setDel(bool del);
 	void setManDir(bool manDir);
-	QString getRootDir();
+	std::string getRootDir();
 	bool getCanRead();
 	bool getCanWrite();
 	bool getCanDel();

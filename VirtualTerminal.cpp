@@ -47,3 +47,14 @@ vector<string> Terminal::processCommandLine() {
 void Terminal::executeRemoteInterrupt(){
 
 }
+
+/*Instruct the slave server what need to be done*/
+void Terminal::executeCmd(const vector<string> &cmdParts) {
+	if (cmdParts[0] == FTP::cmdUSER) {
+			parent->execCmdUser(cmdParts);
+	}else if (cmdParts[0] == FTP::cmdPASS) {
+			parent->execCmdPass(cmdParts);
+	}else {
+			parent->sendReply(500,"Command unrecognized");
+	}
+}
