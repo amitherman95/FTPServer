@@ -64,7 +64,7 @@ public:
 	void setSocket( tcp::socket &acceptedClientSocket);
 	int getState();
 	void setState(const int state);
-	void sendMessage(FTPReply reply);
+	void sendReply(FTPReply reply);
 	
 			/**Access and commands*/
 public:

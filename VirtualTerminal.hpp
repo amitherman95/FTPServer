@@ -11,8 +11,11 @@ amitherman@mail.tau.ac.il
 #include <iostream>
 #include <FTPReply.hpp>
 #include <vector>
+#include <boost/regex.hpp>
+typedef boost::sregex_token_iterator iter_regexToken;
+
 /*Forward decleration
-/*must add '#include "SlaveServer.hpp"' into implementation
+/	must add '#include "SlaveServer.hpp"' into implementation
 /**/
 class SlaveServer;
 
@@ -26,7 +29,6 @@ as the the carrier of the of the terminal, thus the NVT(Network virtual terminal
 the Telnet Protocol standard.
 The terminal is responsible telling the SlaveServer what appropriate action has to be taken.
 */
-
 class Terminal {
 
 			/*Constants*/
@@ -48,11 +50,10 @@ private:
 public:
 	Terminal(SlaveServer*lp_parent);
 	~Terminal()=default;
-	void interpretCommandLine();
-	void streamIntoTerminal(vector<unsigned char> buffer);
+	vector<string> processCommandLine();
+	void streamIntoTerminal(const vector<unsigned char>commandLine);
 	void executeRemoteInterrupt();
-
+	bool validateCommand(const vector<string> &cmdParts);
 };
-
 
 #endif

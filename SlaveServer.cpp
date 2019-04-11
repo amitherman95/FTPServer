@@ -35,33 +35,27 @@ void SlaveServer::setState(const int state) {
 	serverState = state;
 }
 
-void SlaveServer::sendMessage( FTPReply reply) {
-
-}
-
 
 void SlaveServer::ControlThread() {
 	const int buffer_size = 1; //stream one by one
-	vector<unsigned char> ByteBuff;
+	vector<unsigned char> bytesBuffer;
 	boost::system::error_code ec;
-	std::string commandLineTerminal;
+	
 	size_t sizeReceived=0;
 
-	ByteBuff.resize(buffer_size);
+	bytesBuffer.resize(buffer_size);
 	try {
-			boost::asio::write(socketClient, boost::asio::buffer("220 Welcome"), ec);
+			sendReply(FTPReply(220, "Welcome"));
 			while (1) {
-				sizeReceived = socketClient.read_some(boost::asio::buffer(ByteBuff), ec);
-				terminal.streamIntoTerminal(ByteBuff);
+				sizeReceived = socketClient.read_some(boost::asio::buffer(bytesBuffer));
+				terminal.streamIntoTerminal(bytesBuffer);
 			}
-	}catch (boost::system::system_error &e) {
+	}catch (const boost::system::system_error &e) {
 			cerr << "Error " << std::dec << e.code() << ":" << e.what();
 			threadPI.detach();
 			parentMaster->removeSlave(this);
 			return;
 	}
-	
-	
 	
 }
 
@@ -75,3 +69,10 @@ SlaveServer::SlaveServer(MasterServer*lpParent, tcp::socket& acceptedClientSocke
 	threadPI = std::thread{ &SlaveServer::ControlThread, this };
 	}
 
+
+void SlaveServer::sendReply( FTPReply reply) {
+	string message;
+	ostringstream stream(message);
+	stream << std::dec << reply.get_code() << " " << reply.get_msg().toStdString();
+	boost::asio::write(socketClient, boost::asio::buffer(message));
+}
