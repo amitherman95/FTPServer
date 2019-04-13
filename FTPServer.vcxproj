@@ -105,13 +105,16 @@
     <ClCompile Include="SlaveServer.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="VirtualTerminal.cpp" />
-    <ClCompile Include="virtualterminal_executecmd_.cpp" />
+    <ClCompile Include="virtualterminal_executecmd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MasterServer.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SlaveServer.hpp" />
+    <QtMoc Include="SlaveServer.hpp">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtTest;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtTest;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
     <ClInclude Include="User.hpp" />
     <ClInclude Include="VirtualTerminal.hpp" />
   </ItemGroup>

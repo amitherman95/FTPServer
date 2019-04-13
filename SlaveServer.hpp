@@ -22,10 +22,10 @@ using boost::asio::ip::tcp;
 
 /**\class SlaveServer class
 *	Represents the connection to each client
-	and handles user control.
+	and handles user control.	
 */
-class SlaveServer {
-
+class SlaveServer:public QObject {
+	Q_OBJECT
 																		/*Constants*/
 public:
 	static const int state_LoggedOut = 0;
@@ -43,7 +43,8 @@ private:
 	std::thread threadPI;
 	tcp::socket socketClient;
 //*<Root directory access interface
-	QFileSystemModel* interface_rootDir;
+	QDir root_dir;
+	QDir current_dir;
 	int serverState = state_LoggedOut;
 	boost::asio::io_context io_context;
 	Terminal terminal;
@@ -69,7 +70,7 @@ public:
 public:
 	void execCmdUser(const vector<string> &cmdParts);
 	void execCmdPass(const vector<string> &cmdParts);
-
+	void execCmdNoop(const vector<string> &cmdParts);
 
 	/**In case the client disconnect, this function call removeClient from the master server and removes the client
 	*from the list of

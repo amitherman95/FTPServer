@@ -17,9 +17,7 @@ int main(int argc, char *argv[])
 {
 	int out;
 	QCoreApplication a(argc, argv);
-	
 	MasterServer master;
-
 	master.loadConfig("config.xml");
 	signal(SIGINT, handlerQuit);
 	master.startServer();

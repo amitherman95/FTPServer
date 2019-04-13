@@ -45,12 +45,12 @@ User::User(User&& src) noexcept{
 
 }
 
-bool User::isPassRight(const std::string &pass) {
-	return password == pass;
+bool User::isPassRight(const std::string &argPass) {
+	return password == argPass;
 }
 
-bool User:: isUser(const std::string &userName) {
-	return username.compare(username)==0;
+bool User:: isUser(const std::string &argUsername) {
+	return username.compare(argUsername)==0;
 }
 
 void User::setPass(const QString &pass) {
