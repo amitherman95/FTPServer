@@ -1,6 +1,6 @@
 /*
-																				SlaveServer.cpp
-																	Slave server implementation
+																					SlaveServer.cpp
+																		Slave server implementation
 Author:Amit Herman
 amitherman@mail.tau.ac.il
 */
@@ -14,7 +14,7 @@ SlaveServer::~SlaveServer() {
 }
 
 void SlaveServer::setRootDir(const QString &rootPath) {
-	root_dir.setPath(rootPath);
+	currentDir.setBasePath(rootPath);
 }
 void SlaveServer::setArg_username(const string &username) {
 	loginArgUsername = username;
@@ -121,4 +121,71 @@ void SlaveServer::execCmdNoop(const vector<string> &cmdParts) {
 	}else {
 			sendReply(200, "OK");
 	}
+}
+
+void SlaveServer::execCmdMode(const vector<string> &cmdParts) {
+	if (cmdParts.size() != 1) {
+		sendReply(501, "Syntax error");
+	} else {
+		if (cmdParts.at(1) == "f"|| cmdParts.at(1) == "F" ) {
+				sendReply(200, "OK");
+		}else {
+			sendReply(501, "This server supports only stream mode");
+		}
+	}
+}
+
+
+void SlaveServer::execCmdStructure(const vector<string> &cmdParts) {
+	if (cmdParts.size() != 1) {
+			sendReply(501, "Syntax error");
+	} else {
+		if (cmdParts.at(1) == "s"|| cmdParts.at(1) == "S") {
+			sendReply(200, "OK");
+		} else {
+			sendReply(501, "This server supports only stream mode");
+		}
+	}
+}
+
+void SlaveServer::execCmdPrintDirectory(const vector<string> &cmdParts) {
+	string path;
+	if (cmdParts.size() != 2) {
+		sendReply(501, "Syntax error");
+	} else if (this->getState() == 0) {
+		sendReply(530, "Not logged in");
+	} else {
+		path =  "\"" +  currentDir.relativePath()+ "\"";
+		sendReply(267, path);
+	}
+}
+
+
+
+void SlaveServer::execCmdChangeDirectory(const vector<string> &cmdParts) {
+	if (cmdParts.size() != 1) {
+		sendReply(501, "Syntax error");
+		return;
+	} else if (this->getState() == 0) {
+		sendReply(530, "Not logged in");
+		return;
+	}
+	if (currentDir.cd(QString::fromStdString(cmdParts.at(1)))){
+		sendReply(250, "Okay");
+	}else {
+		sendReply(550, "Directory does not exist");
+	}
+}
+
+
+void SlaveServer::execCmdChangeDirUp(const vector<string> &cmdParts) {
+	if (cmdParts.size() != 1) {
+		sendReply(501, "Syntax error");
+		return;
+	}else if (this->getState() == 0) {
+		sendReply(530, "Not logged in");
+		return;
+	}
+	currentDir.cdup();
+	sendReply(250, "Okay");
 }

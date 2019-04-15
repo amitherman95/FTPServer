@@ -44,8 +44,11 @@
     <ClCompile Include="ftpcmds.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="QDirExtended.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="virtualterminal_executecmd.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +56,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VirtualTerminal.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="data_channel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QDirExtended.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

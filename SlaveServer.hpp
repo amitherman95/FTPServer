@@ -17,6 +17,7 @@ class MasterServer;
 #include <boost/asio.hpp>
 #include <thread>
 #include "VirtualTerminal.hpp"
+#include "QDirExtended.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -43,8 +44,7 @@ private:
 	std::thread threadPI;
 	tcp::socket socketClient;
 //*<Root directory access interface
-	QDir root_dir;
-	QDir current_dir;
+	QDirExtended currentDir;
 	int serverState = state_LoggedOut;
 	boost::asio::io_context io_context;
 	Terminal terminal;
@@ -65,12 +65,20 @@ public:
 	int getState();
 	void setState(const int state);
 	void sendReply(int code, const string&message);
-
-			/*Access Control Commands*/
+		
+													/*Access Control Commands*/
 public:
 	void execCmdUser(const vector<string> &cmdParts);
 	void execCmdPass(const vector<string> &cmdParts);
 	void execCmdNoop(const vector<string> &cmdParts);
+	void execCmdMode(const vector<string> &cmdParts);
+	void execCmdStructure(const vector<string> &cmdParts);
+	void execCmdReinit(const vector<string> &cmdParts);
+	void execCmdPrintDirectory(const vector<string> &cmdParts);
+
+														/*Service Commands*/
+	void execCmdChangeDirectory(const vector<string> &cmdParts);
+	void execCmdChangeDirUp(const vector<string> &cmdParts);
 
 	/**In case the client disconnect, this function call removeClient from the master server and removes the client
 	*from the list of

@@ -102,6 +102,7 @@
     <ClCompile Include="ftpcmds.hpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MasterServer.cpp" />
+    <ClCompile Include="QDirExtended.cpp" />
     <ClCompile Include="SlaveServer.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="VirtualTerminal.cpp" />
@@ -115,6 +116,8 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtTest;$(QTDIR)\include\QtWidgets</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtTest;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
+    <ClInclude Include="data_channel.hpp" />
+    <ClInclude Include="QDirExtended.hpp" />
     <ClInclude Include="User.hpp" />
     <ClInclude Include="VirtualTerminal.hpp" />
   </ItemGroup>
