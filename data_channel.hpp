@@ -32,7 +32,7 @@ private:
 	fstream streamFile;
 	boost::asio::io_context io_context;
 	tcp::socket socketData;
-	tcp::acceptor acceptorDataChannel;
+	tcp::acceptor acceptorData;
 	QDir filepath;
 	tcp::endpoint endPoint;
 	int LastThreadReturnCode;
