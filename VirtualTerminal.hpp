@@ -46,6 +46,7 @@ private:
 	std::stringbuf bufferTerminal;
 	SlaveServer*parent;
 	ostream stream;
+	string lastCommand;
 
 			/*Methods*/
 public:

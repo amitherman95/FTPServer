@@ -18,8 +18,10 @@ class MasterServer;
 #include <thread>
 #include "VirtualTerminal.hpp"
 #include "QDirExtended.hpp"
+#include "data_channel.hpp"
 
 using boost::asio::ip::tcp;
+
 
 /**\class SlaveServer class
 *	Represents the connection to each client
@@ -45,9 +47,11 @@ private:
 	tcp::socket socketClient;
 //*<Root directory access interface
 	QDirExtended currentDir;
+	QFile fileToRename;
 	int serverState = state_LoggedOut;
 	boost::asio::io_context io_context;
 	Terminal terminal;
+	DataChannel dataChannel;
 																	/*Methods*/
 
 public:
@@ -75,11 +79,12 @@ public:
 	void execCmdStructure(const vector<string> &cmdParts);
 	void execCmdReinit(const vector<string> &cmdParts);
 	void execCmdPrintDirectory(const vector<string> &cmdParts);
+	void execCmdPassive(const vector<string> &cmdParts);
 
 														/*Service Commands*/
 	void execCmdChangeDirectory(const vector<string> &cmdParts);
 	void execCmdChangeDirUp(const vector<string> &cmdParts);
-
+	void execCmdPassiveMode(const vector<string> &cmdParts);
 	/**In case the client disconnect, this function call removeClient from the master server and removes the client
 	*from the list of
 	*/

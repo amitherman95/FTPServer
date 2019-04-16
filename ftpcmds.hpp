@@ -107,5 +107,24 @@ namespace FTP {
 /*/
 	static const string cmdCDUP = "CDUP";
 
+	/*
+/				Passive mode
+/	Format: PASV
+/	Reply codes:
+/		227 h1,h2,h3,h4,p1,p2
+/
+/*/
+	static const string cmdPASV = "PASV";
+
+
+	/*
+/				Port(Active mode
+/	Format: PORT h1,h2,h3,h4,p1,p2
+/	Reply codes:
+/		227 h1,h2,h3,h4,p1,p2
+/
+/*/
+	static const string cmdPORT = "PORT";
+
 }
 #endif

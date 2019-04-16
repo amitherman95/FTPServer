@@ -33,8 +33,10 @@ void Terminal::executeCmd(const vector<string> &cmdParts) {
 	}else if(cmp_Insenitive(cmdParts[0], FTP::cmdCDUP)){
 		parent->execCmdChangeDirUp(cmdParts);
 
-	}else {
-	parent->sendReply(500, "Command unrecognized");
+	}else if(cmp_Insenitive(cmdParts[0], FTP::cmdPASV)) {
+		parent->execCmdPassive(cmdParts);
+	} else {
+		parent->sendReply(500, "Command unrecognized");
 	}
 
 

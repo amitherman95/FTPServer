@@ -53,5 +53,8 @@ bool QDirExtended::exists() {
 }
 
 string QDirExtended::relativePath() {
+	if (baseDir == currentDir) {
+		return "/";
+	}
 	return "/" + currentDir.relativeFilePath(baseDir.path()).toStdString();
 }

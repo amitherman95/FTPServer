@@ -52,7 +52,7 @@ public:
 	static const int masterActive = 1;
 	static const int masterStopped = 0;
 	static const int ftpPort = 21;
-	static const int ftpDataPot = 20;
+	
 
 	/*	methods	*/
 public:
