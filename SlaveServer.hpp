@@ -84,7 +84,6 @@ public:
 														/*Service Commands*/
 	void execCmdChangeDirectory(const vector<string> &cmdParts);
 	void execCmdChangeDirUp(const vector<string> &cmdParts);
-	void execCmdPassiveMode(const vector<string> &cmdParts);
 	/**In case the client disconnect, this function call removeClient from the master server and removes the client
 	*from the list of
 	*/

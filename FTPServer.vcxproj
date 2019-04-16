@@ -99,13 +99,12 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="slaveserver_ftpcommands.cpp" />
     <ClCompile Include="ftpcmds.hpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MasterServer.cpp" />
     <ClCompile Include="QDirExtended.cpp" />
     <ClCompile Include="SlaveServer.cpp" />
-    <ClCompile Include="data_channel.cpp" />
-    <ClCompile Include="slaveserver_ftpcommands.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="VirtualTerminal.cpp" />
     <ClCompile Include="virtualterminal_executecmd.cpp" />
