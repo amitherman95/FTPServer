@@ -109,6 +109,10 @@ void SlaveServer::execCmdChangeDirUp(const vector<string> &cmdParts) {
 
 
 void SlaveServer::execCmdPassive(const vector<string> &cmdParts) {
-
-
+	if (cmdParts.size() != 1) {
+			sendReply(501, "Syntax error");
+			return;
+	}else if (dataChannel.listen()){
+			sendReply(227);	
+	}
 }

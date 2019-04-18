@@ -8,6 +8,7 @@ amitherman@mail.tau.ac.il
 #include "SlaveServer.hpp"
 #include "MasterServer.hpp"
 #include "ftpcmds.hpp"
+#include <boost/lexical_cast.hpp>
 
 SlaveServer::~SlaveServer() {
 	socketClient.close();
@@ -78,6 +79,12 @@ void SlaveServer::sendReply(int code, const string&raw_message) {
 	boost::asio::write(socketClient, boost::asio::buffer(message.str()));
 }
 
+void SlaveServer::sendReply(int code) {
+	const string crlf = "\r\n";
+	string message;
+	message = boost::lexical_cast<string>(code) + crlf;
+	boost::asio::write(socketClient, boost::asio::buffer(message));
+}
 
 void SlaveServer::removeServer() {
 	threadPI.detach();

@@ -53,6 +53,9 @@
     <ClCompile Include="slaveserver_ftpcommands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="data_channel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="User.hpp">

@@ -29,7 +29,9 @@ bool DataChannel::listen() {
 			acceptorData.accept(socketData);
 	}catch (const boost_sysError &e) {
 			return false;
+			setStatus(status_Not_Connected);
 	}
+	setStatus(status_Connected_Idle);
 	return true;
 }
 
@@ -44,6 +46,20 @@ int DataChannel::getDataMode() {
 }
 
 
-void DataChannel::upload(const string &data) {
+/*
+/	launch LIST command thread.
+*/
+void DataChannel::startUploading_list(iostream &stream) {
+	threadDataChannel = std::thread{ &DataChannel::upload, this , stream };
+}
+void DataChannel::upload(iostream &stream){
+	char byte;
+	try {
+		while (stream.get(byte)) {
+			socketData.write_some(byte);
+		}
+	}catch (const boost_sysError &e) {
+			this->setStatus(status_Not_Connected);
+	}
 
 }

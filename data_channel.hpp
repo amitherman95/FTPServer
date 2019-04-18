@@ -17,7 +17,7 @@ class DataChannel {
 public:
 	static const int modePassive = 0;
 	static const int modeActive = 1;
-	static const int status_Not_Conneceted = 0;
+	static const int status_Not_Connected = 0;
 	static const int status_Connected_Idle = 1;
 	static const int status_Conneceted_inProgress = 2;
 	static const int ftpDataPort = 20;
@@ -51,9 +51,9 @@ public:
 	~DataChannel();
 
 	/*Thread Functions*/
-	bool upload();
-	void upload(const string &data);
+	void upload(iostream &stream);
 	bool download();
+	void startUploading_list(iostream &stream);
 };
 
 

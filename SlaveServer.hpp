@@ -69,7 +69,7 @@ public:
 	int getState();
 	void setState(const int state);
 	void sendReply(int code, const string&message);
-		
+	void sendReply(int code);
 													/*Access Control Commands*/
 public:
 	void execCmdUser(const vector<string> &cmdParts);

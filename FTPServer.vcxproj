@@ -99,6 +99,7 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="data_channel.cpp" />
     <ClCompile Include="slaveserver_ftpcommands.cpp" />
     <ClCompile Include="ftpcmds.hpp" />
     <ClCompile Include="main.cpp" />
