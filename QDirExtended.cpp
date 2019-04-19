@@ -58,3 +58,8 @@ string QDirExtended::relativePath() {
 	}
 	return "/" + currentDir.relativeFilePath(baseDir.path()).toStdString();
 }
+
+
+QStringList QDirExtended::entrylist() {
+	return currentDir.entryList();
+}

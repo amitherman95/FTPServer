@@ -64,10 +64,8 @@ void SlaveServer::ControlThread() {
 SlaveServer::SlaveServer(MasterServer*lpParent, tcp::socket& acceptedClientSocket) :parentMaster(lpParent),
 																															socketClient(std::move(acceptedClientSocket)),
 																															terminal(this) {
-
 	/*Initialize the thread by move operator*/
 	threadPI = std::thread{ &SlaveServer::ControlThread, this };
-
 	}
 
 
@@ -85,6 +83,8 @@ void SlaveServer::sendReply(int code) {
 	message = boost::lexical_cast<string>(code) + crlf;
 	boost::asio::write(socketClient, boost::asio::buffer(message));
 }
+
+
 
 void SlaveServer::removeServer() {
 	threadPI.detach();

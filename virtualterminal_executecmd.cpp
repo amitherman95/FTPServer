@@ -2,7 +2,7 @@
 #include "SlaveServer.hpp"
 #include "ftpcmds.hpp"
 
-
+/*Case insensitive compare as required bt rfc959*/
 bool cmp_Insenitive(const string &str1, const string &str2) {
 	return stricmp(str1.c_str(), str2.c_str()) == 0;
 }

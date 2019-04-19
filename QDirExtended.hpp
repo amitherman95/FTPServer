@@ -15,9 +15,11 @@ private:
 	QDir baseDir;
 	QDir currentDir;
 public:
-	bool cd(const QString &dirName);
 	QDirExtended() = default;
 	QDirExtended(const QString &path);
+	~QDirExtended() = default;
+
+	bool cd(const QString &dirName);
 	void setBasePath(const QString &path);
 	void setCurrentPath(const QString &path);
 	void setCurrentPath();
@@ -25,6 +27,7 @@ public:
 	bool exists(const QString &relativePath);
 	bool exists();
 	string relativePath();
+	QStringList entrylist();
 };
 
 #endif

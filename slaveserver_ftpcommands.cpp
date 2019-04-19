@@ -116,3 +116,15 @@ void SlaveServer::execCmdPassive(const vector<string> &cmdParts) {
 			sendReply(227);	
 	}
 }
+
+void SlaveServer::execCmdList(const vector<string> &cmdParts) {
+	if (cmdParts.size() > 2) {
+		sendReply(501, "Syntax error");
+		return;
+	}
+	auto fileList = currentDir.entrylist();
+	string dataToUpload = fileList.join("\n").toStdString();//*<convert list to std::string
+	stringbuf bufferData(dataToUpload);
+	iostream stream(&bufferData);
+	dataChannel.startUploading_list(stream);
+}
