@@ -185,9 +185,6 @@ void MasterServer::stopServer() {
 	std::cout << "Server stopped\n";
 }
 
-void MasterServer::sendData( tcp::socket& clientSocket, const char*data, int dataLen) {
-	//To be added
-}
 
 bool MasterServer::insertNewClient( tcp::socket& clientSocket){
 	lockMutex();

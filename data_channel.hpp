@@ -25,7 +25,7 @@ public:
 						/*Members*/
 private:
 	tcp::endpoint remoteHost;
-	int status = status_Not_Conneceted;
+	int status = status_Not_Connected;
 	int mode;
 	bool flagAbort;
 	thread threadDataChannel;
@@ -51,9 +51,9 @@ public:
 	~DataChannel();
 
 	/*Thread Functions*/
-	void upload(iostream &stream);
 	bool download();
 	void startUploading_list(iostream &stream);
+	void upload(iostream &stream);
 };
 
 

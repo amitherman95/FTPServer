@@ -50,13 +50,13 @@ int DataChannel::getDataMode() {
 /	launch LIST command thread.
 */
 void DataChannel::startUploading_list(iostream &stream) {
-	threadDataChannel = std::thread{ &DataChannel::upload, this , stream };
+	threadDataChannel = std::thread( &DataChannel::upload, this , std::ref(stream) );
 }
 void DataChannel::upload(iostream &stream){
 	char byte;
 	try {
 		while (stream.get(byte)) {
-			socketData.write_some(byte);
+			socketData.write_some(boost::asio::buffer(&byte,1));
 		}
 	}catch (const boost_sysError &e) {
 			this->setStatus(status_Not_Connected);

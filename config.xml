@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+<general>
+<limitClients>false</limitClients>
+<maxClients>0</maxClients>
+<welcome_msg>Welcome</welcome_msg>
+</general>
+
+<users>
+<user>
+<username>amitherman</username>
+<password>1234</password>
+<rootdir>c:\dir</rootdir>
+<write>true</write>
+<read>true</read>
+<delete_files>true</delete_files>
+<manipulate_folders>true</manipulate_folders>
+</user>
+</users>
+</settings>

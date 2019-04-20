@@ -8,6 +8,7 @@ void SlaveServer::execCmdUser(const vector<string> &cmdParts) {
 			sendReply(501, "Syntax error");
 	}else {
 			setArg_username(cmdParts.at(1));
+			sendReply(331, "Enter password");
 	}
 }
 
@@ -23,6 +24,7 @@ void SlaveServer::execCmdPass(const vector<string> &cmdParts) {
 					this->user = user;
 			/*Assuming the path is correct*/
 					this->setRootDir(user->getRootDir());
+					this->setState(SlaveServer::state_LoggedIn);
 					sendReply(230, "Logged in");
 			}else {
 					sendReply(530, "Wrong password");
@@ -67,13 +69,13 @@ void SlaveServer::execCmdStructure(const vector<string> &cmdParts) {
 
 void SlaveServer::execCmdPrintDirectory(const vector<string> &cmdParts) {
 	string path;
-	if (cmdParts.size() != 2) {
+	if (cmdParts.size() != 1) {
 		sendReply(501, "Syntax error");
 	} else if (this->getState() == 0) {
 		sendReply(530, "Not logged in");
 	} else {
 		path =  "\"" +  currentDir.relativePath()+ "\"";
-		sendReply(267, path);
+		sendReply(257, path);
 	}
 }
 
