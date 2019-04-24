@@ -81,6 +81,7 @@ public:
 	void execCmdReinit(const vector<string> &cmdParts);
 	void execCmdPrintDirectory(const vector<string> &cmdParts);
 	void execCmdPassive(const vector<string> &cmdParts);
+	void execCmdType(const vector<string> &cmdParts);
 
 														/*Service Commands*/
 	void execCmdChangeDirectory(const vector<string> &cmdParts);

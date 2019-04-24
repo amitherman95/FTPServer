@@ -31,13 +31,19 @@ void Terminal::executeCmd(const vector<string> &cmdParts) {
 			parent->execCmdChangeDirectory(cmdParts);
 
 	}else if(cmp_Insenitive(cmdParts[0], FTP::cmdCDUP)){
-		parent->execCmdChangeDirUp(cmdParts);
+			parent->execCmdChangeDirUp(cmdParts);
 
 	}else if(cmp_Insenitive(cmdParts[0], FTP::cmdPASV)) {
-		parent->execCmdPassive(cmdParts);
+			parent->execCmdPassive(cmdParts);
 
-	} else {
-		parent->sendReply(500, "Command unrecognized");
+	}else if(cmp_Insenitive(cmdParts[0], FTP::cmdLIST)){
+			parent->execCmdList(cmdParts);
+
+	}else if(cmp_Insenitive(cmdParts[0], FTP::cmdTYPE)) {
+			parent->execCmdType(cmdParts);
+
+	}else {
+			parent->sendReply(500, "Command unrecognized");
 	}
 
 

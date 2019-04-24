@@ -114,19 +114,42 @@ void SlaveServer::execCmdPassive(const vector<string> &cmdParts) {
 	if (cmdParts.size() != 1) {
 			sendReply(501, "Syntax error");
 			return;
-	}else if (dataChannel.listen()){
-			sendReply(227);	
+	}else{
+			dataChannel.startListening();
+			sendReply(227, "Starting data channel...");
 	}
 }
 
 void SlaveServer::execCmdList(const vector<string> &cmdParts) {
-	if (cmdParts.size() > 2) {
-		sendReply(501, "Syntax error");
-		return;
+	if (dataChannel.getStatus() == DataChannel::status_Not_Connected) {
+			sendReply(425, "No data connection has been established");
 	}
-	auto fileList = currentDir.entrylist();
-	string dataToUpload = fileList.join("\n").toStdString();//*<convert list to std::string
-	stringbuf bufferData(dataToUpload);
-	iostream stream(&bufferData);
-	dataChannel.startUploading_list(stream);
+	if (cmdParts.size() == 1) {
+			sendReply(150, "Opening data connection");
+			auto fileList = currentDir.entrylist();
+			string dataToUpload = fileList.join("\n").toStdString();//*<convert list to std::string
+			stringbuf bufferData(dataToUpload);
+			iostream stream(&bufferData);
+			dataChannel.startUploading_list(stream);
+			return;
+	}else if (cmdParts.size() == 2) {
+			sendReply(202, "Not implemented yet");
+			return;
+	}else {
+			sendReply(501, "Syntax error");
+			return;
+	}
+}
+
+void SlaveServer::execCmdType(const vector<string> &cmdParts) {
+	if (cmdParts.size() != 2) {
+			sendReply(501, "Syntax error");
+			return;
+	}else if (cmdParts.at(1) == "a" | cmdParts.at(1) == "A"){
+			sendReply(200, "OK");
+			return;
+	}else {
+			sendReply(504, "Representation not available");
+			return;
+	}
 }

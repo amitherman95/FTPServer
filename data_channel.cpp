@@ -5,6 +5,8 @@
 */
 
 #include "data_channel.hpp"
+#include "SlaveServer.hpp"
+
 typedef boost::system::system_error boost_sysError;
 
 DataChannel::DataChannel(): socketData(io_context), acceptorData(io_context, tcp::endpoint(tcp::v4(), ftpDataPort)) {
@@ -24,15 +26,15 @@ int DataChannel::getStatus() {
 }
 
 
-bool DataChannel::listen() {
+void DataChannel::listen() {
 	try {
 			acceptorData.accept(socketData);
 	}catch (const boost_sysError &e) {
-			return false;
+			std::cerr << "Data connection:" << e.what()<<endl;
 			setStatus(status_Not_Connected);
+			return;
 	}
 	setStatus(status_Connected_Idle);
-	return true;
 }
 
 void DataChannel::setDataMode(int mode) {
@@ -60,6 +62,11 @@ void DataChannel::upload(iostream &stream){
 		}
 	}catch (const boost_sysError &e) {
 			this->setStatus(status_Not_Connected);
+			parent->sendReply(426, "Data connection broken");
 	}
 
+}
+
+void DataChannel::startListening() {
+	threadDataChannel = std::thread(&DataChannel::listen, this);
 }

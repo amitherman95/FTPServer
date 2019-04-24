@@ -126,5 +126,26 @@ namespace FTP {
 /*/
 	static const string cmdPORT = "PORT";
 
+	/*
+/					Representation type
+/	Format: type a
+/	Reply codes:
+/		200 OK
+/		504 Unimplemented/
+/*/
+	static const string cmdTYPE = "TYPE";
+
+
+	/*
+/				Passive mode
+/	Format: LIST <pathname> or LIST
+/	Reply codes:
+/		150 Opening data connection
+/		426 data connection broken
+/		425 no data connection
+/		226 success
+/*/
+	static const string cmdLIST = "LIST";
+
 }
 #endif

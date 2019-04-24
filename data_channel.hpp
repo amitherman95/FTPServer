@@ -1,15 +1,19 @@
 #ifndef _DATA_CHANNEL_HPP
 #define _DATA_CHANNEL_HPP
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <boost/asio.hpp>
 #include <thread>
 #include "qdir.h"
 
+
+//Forward decleration
+class SlaveServer;
+
 using namespace std;
 using boost::asio::ip::tcp;	
 using namespace boost::asio;
-
 
 class DataChannel {
 	
@@ -24,6 +28,7 @@ public:
 
 						/*Members*/
 private:
+	SlaveServer * parent;
 	tcp::endpoint remoteHost;
 	int status = status_Not_Connected;
 	int mode;
@@ -40,12 +45,12 @@ private:
 public:
 	void setStatus(int status);
 	int getStatus();
-	bool listen();
 	bool connectToHost();
 	void setDataMode(int mode);
 	int getDataMode();
 	void setRemoteHostAddress(const string &stringAddress);
 	void startUploading(const string &data);
+	void startListening();
 	/*Constructors and Destructors*/
 	DataChannel();
 	~DataChannel();
@@ -54,6 +59,7 @@ public:
 	bool download();
 	void startUploading_list(iostream &stream);
 	void upload(iostream &stream);
+	void listen();
 };
 
 
